@@ -61,6 +61,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
             }
         }
 
