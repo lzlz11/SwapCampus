@@ -19,14 +19,22 @@ fun SwapCampusApp(viewModel: ListingsViewModel, authRepo: AuthRepository, navCon
     Scaffold(
         bottomBar = {
             NavigationBar {
-                NavigationBarItem(icon = { Text("List") }, label = { Text("Browse") }, selected = true, onClick = { navController.navigate("browse") })
-                NavigationBarItem(icon = { Text("+") }, label = { Text("Post") }, selected = false, onClick = { navController.navigate("post") })
+                NavigationBarItem(icon = { Text("List") }, label = { Text("Listings") }, selected = true, onClick = { navController.navigate("browse") })
+                NavigationBarItem(icon = { Text("★") }, label = { Text("My Listings") }, selected = false, onClick = { navController.navigate("myListings") })
+                NavigationBarItem(icon = { Text("👤") }, label = { Text("Profile") }, selected = false, onClick = { navController.navigate("profile") })
             }
         }
     ) { padding ->
         NavHost(navController, "browse", Modifier.padding(padding)) {
             composable("browse") { BrowseScreen(viewModel, navController) }
+            // Placeholder routes for the other tabs
+            composable("myListings") { Text("My Listings Screen", Modifier.padding(16.dp)) }
+            composable("profile") { Text("Profile Screen", Modifier.padding(16.dp)) }
+            
             composable("post") { PostScreen(viewModel, authRepo, navController) }
+            composable("edit/{id}") { backStackEntry ->
+                EditScreen(backStackEntry.arguments?.getString("id") ?: "", viewModel, authRepo, navController)
+            }
             composable("detail/{id}") { backStackEntry ->
                 DetailScreen(backStackEntry.arguments?.getString("id") ?: "", viewModel, authRepo, navController)
             }
@@ -41,7 +49,10 @@ fun BrowseScreen(viewModel: ListingsViewModel, navController: NavHostController)
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         OutlinedTextField(searchQuery, { searchQuery = it }, label = { Text("Search...") }, modifier = Modifier.fillMaxWidth())
-        Button(onClick = { viewModel.search(searchQuery) }) { Text("Search") }
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+            Button(onClick = { viewModel.search(searchQuery) }) { Text("Search") }
+            Button(onClick = { navController.navigate("post") }) { Text("Post Listing") }
+        }
 
         when (val currentState = state) {
             is UiState.Loading -> CircularProgressIndicator()
@@ -65,15 +76,42 @@ fun PostScreen(viewModel: ListingsViewModel, authRepo: AuthRepository, navContro
     if (currentUser == null) { Text("Please log in to post."); return }
 
     var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
 
     Column(Modifier.padding(16.dp)) {
-        OutlinedTextField(title, { title = it }, label = { Text("Title") })
-        OutlinedTextField(price, { price = it }, label = { Text("Price") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+        OutlinedTextField(title, { title = it }, label = { Text("Title") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(description, { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(price, { price = it }, label = { Text("Price") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth())
         Button(onClick = {
-            viewModel.postListing(Annonce(UUID.randomUUID().toString(), title, "", price.toDoubleOrNull() ?: 0.0, Categorie.OTHER, ownerId = currentUser!!.id))
+            viewModel.postListing(Annonce(UUID.randomUUID().toString(), title, description, price.toDoubleOrNull() ?: 0.0, Categorie.OTHER, ownerId = currentUser!!.id))
             navController.popBackStack()
-        }) { Text("Publish") }
+        }, modifier = Modifier.padding(top = 16.dp)) { Text("Publish") }
+    }
+}
+
+@Composable
+fun EditScreen(id: String, viewModel: ListingsViewModel, authRepo: AuthRepository, navController: NavHostController) {
+    val currentUser by authRepo.currentUser.collectAsState()
+    val listing = viewModel.getListingById(id)
+
+    if (listing == null || currentUser?.id != listing.ownerId) {
+        Text("Access Denied. Only the owner can edit."); return
+    }
+
+    var title by remember { mutableStateOf(listing.title) }
+    var description by remember { mutableStateOf(listing.description) }
+    var price by remember { mutableStateOf(listing.price.toString()) }
+
+    Column(Modifier.padding(16.dp)) {
+        Text("Edit Listing", style = MaterialTheme.typography.headlineMedium)
+        OutlinedTextField(title, { title = it }, label = { Text("Title") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(description, { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(price, { price = it }, label = { Text("Price") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth())
+        Button(onClick = {
+            viewModel.updateListing(listing.copy(title = title, description = description, price = price.toDoubleOrNull() ?: 0.0))
+            navController.popBackStack()
+        }, modifier = Modifier.padding(top = 16.dp)) { Text("Save Changes") }
     }
 }
 
@@ -85,8 +123,19 @@ fun DetailScreen(id: String, viewModel: ListingsViewModel, authRepo: AuthReposit
 
     Column(Modifier.padding(16.dp)) {
         Text(listing.title, style = MaterialTheme.typography.headlineMedium)
+        Text(listing.description, modifier = Modifier.padding(vertical = 8.dp))
+        Text("Status: ${listing.status.name}")
+        
         if (currentUser?.id == listing.ownerId) {
-            Button(onClick = { viewModel.changeStatus(id, EtatAnnonce.RESERVED) }) { Text("Reserve") }
+            Button(onClick = { navController.navigate("edit/${listing.id}") }) { Text("Edit") }
+            
+            if (listing.status == EtatAnnonce.AVAILABLE) {
+                Button(onClick = { viewModel.changeStatus(id, EtatAnnonce.RESERVED) }) { Text("Reserve") }
+            } else if (listing.status == EtatAnnonce.RESERVED) {
+                Button(onClick = { viewModel.changeStatus(id, EtatAnnonce.SOLD) }) { Text("Mark Sold") }
+                Button(onClick = { viewModel.changeStatus(id, EtatAnnonce.AVAILABLE) }) { Text("Cancel Reserve") }
+            }
+            
             Button(onClick = { showDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Delete") }
         }
     }
