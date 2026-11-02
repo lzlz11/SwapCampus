@@ -19,3 +19,20 @@ local.properties
 
 # Android Studio local VCS configuration
 .idea/vcs.xml
+
+# Keep local tests out of version control
+/app/src/test/
+/app/src/androidTest/
+/shared/src/androidHostTest/
+/shared/src/androidDeviceTest/
+/shared/src/commonTest/
+/androidApp/build/
+/composeApp/build/
+/androidApp/src/test/
+/androidApp/src/androidTest/
+/composeApp/src/commonTest/
+/composeApp/src/androidHostTest/
+/composeApp/src/androidDeviceTest/
+
+# Cached output from the former app module
+/app/build/

@@ -1,48 +1,17 @@
 package com.example.swapcampus_zheng_li.repository
 
 import com.example.swapcampus_zheng_li.CompteUtilisateur
-import com.example.swapcampus_zheng_li.RoleUtilisateur
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.LocalDate
+import kotlinx.coroutines.flow.asStateFlow
 
 class InMemoryAuthRepository : AuthRepository {
 
-    private val utilisateurs = listOf(
-        CompteUtilisateur(
-            id = 1,
-            nom = "Etudiant 1",
-            email = "student1@isep.fr",
-            motDePasseHash = "student123",
-            dateCreation = LocalDate(2026, 1, 1),
-            role = RoleUtilisateur.ETUDIANT,
-            actif = true
-        ),
-        CompteUtilisateur(
-            id = 2,
-            nom = "Etudiant 2",
-            email = "student2@isep.fr",
-            motDePasseHash = "student123",
-            dateCreation = LocalDate(2026, 1, 1),
-            role = RoleUtilisateur.ETUDIANT,
-            actif = true
-        ),
-        CompteUtilisateur(
-            id = 3,
-            nom = "Administrateur",
-            email = "admin@isep.fr",
-            motDePasseHash = "admin123",
-            dateCreation = LocalDate(2026, 1, 1),
-            role = RoleUtilisateur.ADMINISTRATEUR,
-            actif = true
-        )
-    )
+    private val utilisateurs = DemoData.accounts
 
     private val _currentUser =
         MutableStateFlow<CompteUtilisateur?>(null)
 
-    override val currentUser: StateFlow<CompteUtilisateur?> =
-        _currentUser
+    override val currentUser = _currentUser.asStateFlow()
 
     override fun authenticate(
         email: String,

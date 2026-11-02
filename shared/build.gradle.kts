@@ -5,14 +5,18 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(17)
 
     // Target declarations - add or remove as needed below. These define
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
-    androidLibrary {
-        namespace = "com.example.swapcampus_zheng_li"
-        compileSdk = 36
-        minSdk = 36
+    android {
+        namespace = "com.example.swapcampus_zheng_li.shared"
+        compileSdk = 37
+        minSdk = 24
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
 
         withHostTestBuilder {
         }
@@ -60,8 +64,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
 

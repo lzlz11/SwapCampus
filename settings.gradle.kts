@@ -19,6 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SwapCampus_Zheng_LI"
-include(":app")
+rootProject.name = "SwapCampus_ZhengLi"
+include(":androidApp")
+include(":composeApp")
 include(":shared")

@@ -29,7 +29,7 @@ class InMemoryListingRepository(
             require(listing.titre.isNotBlank()) {
                 "Le titre est obligatoire."
             }
-            require(listing.prix > 0) {
+            require(listing.prix.isFinite() && listing.prix > 0) {
                 "Le prix doit être supérieur à zéro."
             }
 
@@ -42,7 +42,7 @@ class InMemoryListingRepository(
             require(listing.titre.isNotBlank()) {
                 "Le titre est obligatoire."
             }
-            require(listing.prix > 0) {
+            require(listing.prix.isFinite() && listing.prix > 0) {
                 "Le prix doit être supérieur à zéro."
             }
 
