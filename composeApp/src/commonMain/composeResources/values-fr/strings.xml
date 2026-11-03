@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_title">Connexion à SwapCampus</string>
+    <string name="login_email">Adresse e-mail</string>
+    <string name="login_password">Mot de passe</string>
+    <string name="action_login">Se connecter</string>
+    <string name="login_demo_accounts">Comptes de démonstration :\nada@isep.fr / ada123\nstudent1@isep.fr / student123\nstudent2@isep.fr / student123\nadmin@isep.fr / admin123</string>
+    <string name="login_error_empty_fields">Saisissez votre adresse e-mail et votre mot de passe.</string>
+    <string name="login_error_invalid_credentials">Adresse e-mail ou mot de passe incorrect.</string>
+    <string name="welcome_title">Bienvenue, %1$s !</string>
+    <string name="welcome_platform">Exécuté sur %1$s</string>
+    <string name="welcome_logout">Se déconnecter</string>
+</resources>
