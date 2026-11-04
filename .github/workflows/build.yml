@@ -56,12 +56,18 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
+        id: konan
         with:
           path: ~/.konan
           key: ${{ runner.os }}-${{ runner.arch }}-konan-2.4.21
       - run: bash scripts/prepare-android-sdk.sh
       - run: bash scripts/ios-simulator-smoke.sh
+      - uses: actions/cache/save@v4
+        if: always() && steps.konan.outputs.cache-hit != 'true'
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-${{ runner.arch }}-konan-2.4.21
       - uses: actions/upload-artifact@v4
         if: always()
         with:
