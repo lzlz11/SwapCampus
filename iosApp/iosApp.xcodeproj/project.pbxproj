@@ -121,6 +121,8 @@
 				"PRODUCT_NAME" = "SwapCampus";
 				"INFOPLIST_FILE" = "iosApp/Info.plist";
 				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"ARCHS" = "arm64";
+				"ONLY_ACTIVE_ARCH" = "YES";
 				"CODE_SIGN_STYLE" = "Automatic";
 				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
 				"FRAMEWORK_SEARCH_PATHS" = (
@@ -160,6 +162,8 @@
 				"PRODUCT_NAME" = "SwapCampus";
 				"INFOPLIST_FILE" = "iosApp/Info.plist";
 				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"ARCHS" = "arm64";
+				"ONLY_ACTIVE_ARCH" = "YES";
 				"CODE_SIGN_STYLE" = "Automatic";
 				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
 				"FRAMEWORK_SEARCH_PATHS" = (

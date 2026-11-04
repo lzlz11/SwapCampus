@@ -23,14 +23,14 @@ print(sorted(choices,reverse=True)[0][-1])
 ')"
 fi
 printf '%s\n' "$SIMULATOR_UDID" > "$ARTIFACTS/simulator-udid.txt"
+xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug \
+  -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+  -derivedDataPath iosApp/build/DerivedData CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build \
+  2>&1 | tee "$ARTIFACTS/xcodebuild.log"
+APP="$PWD/iosApp/build/DerivedData/Build/Products/Debug-iphonesimulator/SwapCampus.app"
 xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
 xcrun simctl bootstatus "$SIMULATOR_UDID" -b
 open -a Simulator --args -CurrentDeviceUDID "$SIMULATOR_UDID" || true
-xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug \
-  -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
-  -derivedDataPath iosApp/build/DerivedData CODE_SIGNING_ALLOWED=NO build \
-  2>&1 | tee "$ARTIFACTS/xcodebuild.log"
-APP="$PWD/iosApp/build/DerivedData/Build/Products/Debug-iphonesimulator/SwapCampus.app"
 xcrun simctl install "$SIMULATOR_UDID" "$APP"
 xcrun simctl terminate "$SIMULATOR_UDID" com.example.swapcampus.ios 2>/dev/null || true
 LAUNCH="$(xcrun simctl launch "$SIMULATOR_UDID" com.example.swapcampus.ios)"
