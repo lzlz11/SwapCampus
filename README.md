@@ -53,7 +53,7 @@ For interactive checks, manually enable SSH/VNC when starting a Codemagic build;
 the script opens Simulator on the selected iPhone.
 
 `.github/workflows/build.yml` also defines Android and Apple Silicon macOS jobs.
-Check the branch’s GitHub Actions runs for current cloud build status.
+Both Android and iOS passed in [cloud run 41816958615](https://github.com/lzlz11/SwapCampus/actions/runs/41816958615). The iOS check covers native build, installation and startup; full interactive iOS scenarios remain to be tested.
 
 ## Features and demo data
 

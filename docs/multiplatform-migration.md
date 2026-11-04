@@ -68,7 +68,29 @@ The iOS Kotlin metadata check type-checks source-set declarations; it does not l
 an Apple framework, compile Swift, or run the app. Cloud linking and runtime results are tracked by the branch’s Actions runs; metadata
 compilation alone does not establish native runtime success.
 
-## iOS cloud verification
+## iOS cloud result
+
+GitHub Actions run [41816958615](https://github.com/lzlz11/SwapCampus/actions/runs/41816958615)
+passed both Android and iOS jobs for code commit `391470ad12bc91d6c5cd0ef78aec49d49cdd621e`.
+The iOS job compiled/linked Kotlin Native, built the SwiftUI Xcode host, installed the
+app, launched it and verified that the process remained alive. The downloaded bundle
+was also checked to contain an arm64 Mach-O executable for iPhoneSimulator.
+
+[Verified iPhone simulator launch screenshot](ios-validation/ios-launch.png)
+shows the full shared Listings UI, all three demo listings/prices, the tabs and + FAB.
+Artifacts include the simulator app ZIP, startup screenshot and build/launch logs.
+
+Two cloud setup issues were fixed: setup-android's removed default `tools` package,
+and Xcode's default `arm64 x86_64` simulator architecture list. The app now explicitly
+builds arm64. Kotlin Native and Gradle caches are retained, including on failed builds.
+During verification GitHub reported a Git Operations/Actions incident; transient push
+failures were retried. Older/duplicate workflow runs were canceled in favor of the
+latest PR run. The main branch has not been merged or modified by this work.
+
+This is native build/startup verification, not the full interactive iOS acceptance suite.
+The remaining iPhone interaction scenarios below still require manual testing.
+
+## Reproduce iOS cloud verification
 
 Both workflows use Apple Silicon. The project's current Compose artifacts do not
 resolve iosX64 variants, so both modules target iosArm64 and iosSimulatorArm64.
@@ -87,7 +109,7 @@ The former unused shared iosX64 target was removed.
 
 | Scenario | Android after migration | iOS simulator |
 | --- | --- | --- |
-| Launch, list and localized prices | Verified | Pending |
+| Launch, list and English prices | Verified | Verified by startup screenshot |
 | Search/category/empty state | Verified | Pending |
 | Detail/back/date | Verified | Pending |
 | Guest reserve, login, return | Verified | Pending |

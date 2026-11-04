@@ -59,4 +59,4 @@ The existing repositories keep data in memory; process restart resets demo data.
 Temporary QA listings were removed/reset. Final state: English, logged out, original three listings;
 system night-mode and keyboard setting restored.
 
-Full commonMain migration and typed multiplatform navigation are implemented. Shared and iOS source-set Kotlin metadata compilation passed. Apple framework linking, Swift compilation and iPhone simulator runtime acceptance remain pending; cloud workflows and an Xcode host project are ready. See [migration notes](multiplatform-migration.md).
+Full commonMain migration and typed multiplatform navigation are implemented. Shared and iOS source-set Kotlin metadata compilation passed. Apple framework linking, Swift compilation and iPhone simulator startup passed in [cloud run 41816958615](https://github.com/lzlz11/SwapCampus/actions/runs/41816958615). Full interactive iOS acceptance is still pending. See [migration notes](multiplatform-migration.md).
