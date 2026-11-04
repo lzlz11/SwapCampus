@@ -36,3 +36,8 @@ local.properties
 
 # Cached output from the former app module
 /app/build/
+
+# Xcode local state and iOS build artifacts
+/iosApp/build/
+**/xcuserdata/
+*.xcuserstate

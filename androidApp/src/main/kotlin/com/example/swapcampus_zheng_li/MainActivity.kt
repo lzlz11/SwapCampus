@@ -1,14 +1,14 @@
 package com.example.swapcampus_zheng_li
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
-import com.example.swapcampus_zheng_li.ui.SwapCampusApp
+import androidx.activity.enableEdgeToEdge
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val container = (application as SwapCampusApplication).container
-        setContent { SwapCampusApp(container) }
+        enableEdgeToEdge()
+        setContent { App() }
     }
 }

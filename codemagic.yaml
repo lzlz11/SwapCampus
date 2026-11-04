@@ -1,24 +1,15 @@
 workflows:
   ios-framework:
-    name: "Step 9 - iOS simulator framework"
+    name: SwapCampus - complete iOS simulator app
     instance_type: mac_mini_m2
-    max_build_duration: 45
-
+    max_build_duration: 60
     environment:
       xcode: "26.4"
       java: 17
-
     scripts:
-      - name: Prepare Android SDK for Gradle
-        script: |
-          if [ ! -f "$ANDROID_HOME/platforms/android-37.0/android.jar" ]; then
-            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0"
-          fi
-
-      - name: Build ComposeApp framework
-        script: |
-          chmod +x gradlew
-          ./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64 --stacktrace
-
+      - name: Prepare Android SDK for Kotlin Gradle configuration
+        script: bash scripts/prepare-android-sdk.sh
+      - name: Build and launch complete app in iPhone simulator
+        script: bash scripts/ios-simulator-smoke.sh
     artifacts:
-      - composeApp/build/bin/iosSimulatorArm64/debugFramework/ComposeApp.framework/**
+      - iosApp/build/artifacts/**

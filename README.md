@@ -1,105 +1,84 @@
-# SwapCampus_ZhengLi
+# SwapCampus
 
-Android baseline for **TP1 CRUD**, reusing the French domain from **TD2 Advanced Kotlin**.
-This is the working Android starting point for the Compose Multiplatform tutorial (Step 0).
+Kotlin / Compose Multiplatform campus marketplace. Android and iOS share the full UI,
+ViewModels, typed navigation, repositories and English/French resources.
 
-## Project structure
+## Structure
 
 ```text
-androidApp/                       Android launcher only
-  src/main/kotlin/.../            MainActivity, SwapCampusApplication
-  src/main/res/                   Launcher icons, Android window theme
-composeApp/                       TP1 UI module (Android target at this stage)
-  src/androidMain/kotlin/.../ui/
-    AppContainer.kt               Repository construction and demo data
-    SwapCampusApp.kt              NavHost and bottom navigation
-    viewmodel/                    AuthViewModel, ListingsViewModel, UiState
-    screens/                      Login, profile, listings, form, detail, my listings
-    components/                   Reusable listing card and photo
-    navigation/                   Route names and integer arguments
-    i18n/                         Android login error labels
-    theme/                        SwapCampusTheme
-  src/androidMain/res/            English/French login resources, photo placeholder
-shared/
-  src/commonMain/kotlin/.../      Existing TD2 French domain and date helper
-    repository/                   Repository interfaces, in-memory implementations, demo data
-  src/androidMain/               Android platform implementation
-  src/iosMain/                   Existing iOS platform implementation
+androidApp/                       Android launcher (AppCompatActivity for app locales)
+composeApp/src/commonMain/         App(), all screens/components/ViewModels/routes/resources
+composeApp/src/androidMain/        LanguageSelector, formatters and dynamic-theme actuals
+composeApp/src/iosMain/            Language hint, Foundation formatters, theme and controller
+shared/src/commonMain/            Existing French domain and in-memory repositories
+iosApp/iosApp.xcodeproj/           Shared Xcode scheme iosApp
+iosApp/iosApp/                     SwiftUI host and English/French bundle localization
+scripts/                          Cloud SDK setup and iPhone simulator build/startup check
 ```
 
-Dependencies: `androidApp -> composeApp -> shared`. ViewModels depend on repository
-interfaces, never on `CatalogueAnnonces`. TD2 entities (`Annonce`, `CompteUtilisateur`,
-`EtatAnnonce`, `Message`, moderation classes, enums and catalog) retain their French
-names and existing data shape. `compteUtilisateur.kt` is renamed `CompteUtilisateur.kt`
-to match the Kotlin class name.
+Dependency direction: `androidApp -> composeApp -> shared`; the iOS host embeds the
+`ComposeApp` framework. Both launchers call common `App()`.
 
-The former `app` module is no longer included by Gradle. Its ignored local test/cache
-folders may still exist on this machine. No source code should be added there.
+## Android (Windows)
 
-## Build and run (Windows)
-
-Toolchain: JDK 17, Kotlin/Compose Compiler 2.4.21, AGP 9.2.1, Gradle 9.4.1,
-compile/target SDK 37, minimum SDK 24. Android UI uses Compose BOM 2026.09.00.
-Compose Multiplatform 1.12.2 remains declared for the later UI migration.
+Open the repository in Android Studio, sync, select **androidApp** and run.
+Use JDK 17 (the Gradle daemon toolchain is pinned to 17), SDK API 37 and Build Tools 36.0.0.
 
 ```powershell
-.\gradlew.bat --version
-.\gradlew.bat :androidApp:assembleDebug
-.\gradlew.bat :androidApp:lintDebug
+.\gradlew.bat :androidApp:assembleDebug :androidApp:lintDebug
+.\gradlew.bat :composeApp:compileCommonMainKotlinMetadata :composeApp:compileIosMainKotlinMetadata
 ```
 
-Use Android Studio **2025.3.4 or newer** for AGP 9.2. IDEA can also invoke the Wrapper
-from its terminal; its Android IDE integration depends on compatible plugins.
-Sync/reload Gradle after this module reorganization and select **androidApp** as the
-Android run configuration. JDK 17 is pinned by `gradle/gradle-daemon-jvm.properties`;
-the local `.gradle/config.properties` points to the installed JDK 17 as well.
+Metadata compilation checks shared/platform Kotlin declarations; it is not an iOS
+framework link or an Xcode simulator build. Those require macOS.
 
-APK: `androidApp/build/outputs/apk/debug/androidApp-debug.apk`.
+## iOS (Apple Silicon Mac or Codemagic)
 
-## Step 0 acceptance
+Open `iosApp/iosApp.xcodeproj`, select the **iosApp** scheme and an iPhone simulator.
+Set `JAVA_HOME` to a JDK 17 installation and `ANDROID_HOME` to the Android SDK if needed.
+The first Xcode build invokes Gradle to build/embed the framework and its Compose resources.
+The iOS deployment target is 16.0. Simulator builds do not need a signing team.
 
-1. Launch the app on an Android device/emulator (API 24 or newer).
-2. Browse the seeded listings as a guest. Search keywords and choose category chips.
-3. Open **Profile -> Log in**.
-4. Empty fields and an incorrect password display explicit errors.
-5. Log in using **ada@isep.fr / ada123**; the profile shows **Welcome, Ada!**.
-6. Log out and confirm that posting/editing requires authentication.
-7. Log back in; verify post, owner-only edit/delete, and the reservation/sale/cancel flow.
+For automated build, install and startup validation on a Mac:
 
-Other existing accounts remain available:
+```bash
+bash scripts/prepare-android-sdk.sh
+bash scripts/ios-simulator-smoke.sh
+```
 
-| Role | Email | Password |
-|---|---|---|
-| Student | student1@isep.fr | student123 |
-| Student | student2@isep.fr | student123 |
+`codemagic.yaml` retains workflow ID **ios-framework**, but now builds the complete
+simulator app, launches it, checks that it remains running, and exports a screenshot,
+logs and `SwapCampus-simulator.zip` under `iosApp/build/artifacts/`.
+For interactive checks, manually enable SSH/VNC when starting a Codemagic build;
+the script opens Simulator on the selected iPhone.
+
+`.github/workflows/build.yml` also defines Android and Apple Silicon macOS jobs.
+Both Android and iOS passed in [cloud run 41816958615](https://github.com/lzlz11/SwapCampus/actions/runs/41816958615). The iOS check covers native build, installation and startup; full interactive iOS scenarios remain to be tested.
+
+## Features and demo data
+
+Browse/search/filter; listing details; login/logout; post/edit; owner-only deletion;
+reserve/cancel/sell/reopen; My Listings; profile; English/French prices and dates;
+localized success snackbars; system dark mode; top/back navigation and + action.
+
+Android offers **Follow system / English / Français** in Profile. iOS shows a hint to
+change language in iPhone Settings. The bundle declares English and French.
+
+| Account | Email | Password |
+| --- | --- | --- |
+| Ada | ada@isep.fr | ada123 |
+| Student 1 | student1@isep.fr | student123 |
+| Student 2 | student2@isep.fr | student123 |
 | Administrator | admin@isep.fr | admin123 |
 
-These are mock plaintext credentials as explicitly required by TP1. Data is kept in
-memory and resets when the Android process restarts. Firebase, persistent storage,
-messaging UI and moderation UI are later work, outside this baseline.
+These are local mock accounts. Data lives in memory and resets after process restart.
+Photo URLs use shared Coil UI; Android keeps OkHttp, iOS uses Ktor/Darwin.
+Firebase, persistent storage, messaging and moderation UI are outside this lab.
 
-Business validation (nonblank title, positive finite price) is in `shared`.
-Authentication and ownership checks also run in the listings ViewModel. Successful
-mutations refresh all listings while retaining browse filters. My Listings and detail
-use the full collection, so an active browse filter cannot hide owned listings or details.
+## Verification and workshop notes
 
-## Local tests
+- [Android runtime acceptance](docs/android-validation.md)
+- [Migration inventory, platform comparison and iOS checklist](docs/multiplatform-migration.md)
 
-The user requested that test sources remain local and untracked. The test directories
-are ignored in `.gitignore`, including those in the new modules. To run local tests:
-
-```powershell
-.\gradlew.bat :composeApp:testAndroidHostTest :shared:testAndroidHostTest
-```
-
-A fresh checkout will not contain these local-only tests. Build outputs are ignored too.
-No Git commit or push is performed by this change.
-
-## Later iOS migration
-
-This baseline intentionally keeps UI in `composeApp/src/androidMain`, as TP1 requests.
-The CMP tutorial later moves login, its ViewModel, container, theme and texts to
-`commonMain`, adds the iOS UI target/entry point, and creates `iosApp`. Only `shared`
-currently declares iOS targets. iOS compilation/simulator verification needs a cloud Mac
-(e.g. Codemagic or a suitable GitHub Actions runner). These cloud workflows are not
-configured by this baseline change.
+Local test folders remain ignored, following the existing repository convention.
+Migration changes are published on the dedicated `codex/cmp-migration` branch.

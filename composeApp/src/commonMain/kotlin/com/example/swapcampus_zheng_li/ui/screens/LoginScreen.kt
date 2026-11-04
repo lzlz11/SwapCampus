@@ -23,17 +23,17 @@ import com.example.swapcampus_zheng_li.ui.viewmodel.AuthViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginScreen(viewModel: AuthViewModel, onLoggedIn: () -> Unit) {
+fun LoginScreen(viewModel: AuthViewModel, onLoggedIn: () -> Unit, showTitle: Boolean = true) {
     val user by viewModel.currentUser.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(user?.id) { if (user != null) onLoggedIn() }
     Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+        Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(stringResource(Res.string.login_title), style = MaterialTheme.typography.headlineMedium)
+        if (showTitle) Text(stringResource(Res.string.login_title), style = MaterialTheme.typography.headlineMedium)
         OutlinedTextField(
             value = email, onValueChange = { email = it }, label = { Text(stringResource(Res.string.login_email)) },
             singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),

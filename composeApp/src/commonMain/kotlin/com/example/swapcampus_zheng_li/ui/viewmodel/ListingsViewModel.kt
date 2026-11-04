@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.swapcampus_zheng_li.*
 import com.example.swapcampus_zheng_li.repository.AuthRepository
 import com.example.swapcampus_zheng_li.repository.ListingRepository
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,6 +23,14 @@ class ListingsViewModel(
     val keyword = _keyword.asStateFlow()
     private val _category = MutableStateFlow<Categorie?>(null)
     val category = _category.asStateFlow()
+
+    // Buffered one-time events survive navigation without replaying on recomposition.
+    private val messageChannel = Channel<UiMessage>(Channel.BUFFERED)
+    val messages = messageChannel.receiveAsFlow()
+
+    private fun notifySuccess(message: UiMessage) {
+        viewModelScope.launch { messageChannel.send(message) }
+    }
 
     init { loadListings() }
 
@@ -72,7 +82,10 @@ class ListingsViewModel(
         }
         if (existing == null) repository.postListing(listing).getOrThrow()
         else repository.updateListing(listing).getOrThrow()
-    }.onSuccess { loadListings() }
+    }.onSuccess {
+        loadListings()
+        notifySuccess(if (id == null) UiMessage.POSTED else UiMessage.UPDATED)
+    }
 
     fun changeStatus(id: Int, status: EtatAnnonce): Result<Annonce> = runCatching {
         val user = authRepository.currentUser.value ?: error("Please log in first.")
@@ -85,7 +98,13 @@ class ListingsViewModel(
             is Vendue -> require(listing.auteur.id == user.id && listing.etat is Reservee) { "Only the owner can complete a reservation." }
             Disponible -> require(listing.auteur.id == user.id && listing.etat != Disponible) { "Only the owner can cancel or reopen a listing." }
         }
-        repository.changeStatus(id, status).getOrThrow()
+        repository.changeStatus(id, status).getOrThrow().also {
+            notifySuccess(when (status) {
+                is Reservee -> UiMessage.RESERVED
+                is Vendue -> UiMessage.SOLD
+                Disponible -> if (listing.etat is Reservee) UiMessage.RESERVATION_CANCELED else UiMessage.MADE_AVAILABLE
+            })
+        }
     }.onSuccess { loadListings() }
 
     fun removeListing(id: Int): Result<Unit> = runCatching {
@@ -93,5 +112,8 @@ class ListingsViewModel(
         val listing = repository.getListing(id) ?: error("Listing not found.")
         require(listing.auteur.id == user.id) { "Only the owner can delete this listing." }
         check(repository.removeListing(id)) { "Listing not found." }
-    }.onSuccess { loadListings() }
+    }.onSuccess {
+        loadListings()
+        notifySuccess(UiMessage.DELETED)
+    }
 }

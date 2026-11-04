@@ -1,0 +1,252 @@
+// !$*UTF8*$!
+{
+	"archiveVersion" = 1;
+	"classes" = {
+	};
+	"objectVersion" = 56;
+	"objects" = {
+		"01B2116AB77F92D60B798083" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "iOSApp.swift";
+			"sourceTree" = "<group>";
+		};
+		"52C924246E6E42B0BFBD8687" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "01B2116AB77F92D60B798083";
+		};
+		"3C4D5BF81259353996C99C21" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "ContentView.swift";
+			"sourceTree" = "<group>";
+		};
+		"93197BF017AD86BFC59621BB" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "3C4D5BF81259353996C99C21";
+		};
+		"9AC3B5AD93CBC0305C62F78F" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text.plist.xml";
+			"path" = "Info.plist";
+			"sourceTree" = "<group>";
+		};
+		"A8792157CB4F27FB949C035F" = {
+			"isa" = "PBXFileReference";
+			"explicitFileType" = "wrapper.application";
+			"includeInIndex" = 0;
+			"path" = "SwapCampus.app";
+			"sourceTree" = "BUILT_PRODUCTS_DIR";
+		};
+		"E17E80AD8E2103CF3FC3FD96" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"01B2116AB77F92D60B798083",
+				"3C4D5BF81259353996C99C21",
+				"9AC3B5AD93CBC0305C62F78F",
+			);
+			"path" = "iosApp";
+			"sourceTree" = "<group>";
+		};
+		"0A3E27B8CA818264D75C8D81" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"A8792157CB4F27FB949C035F",
+			);
+			"name" = "Products";
+			"sourceTree" = "<group>";
+		};
+		"0D6E4079E36703EBD37C0072" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"E17E80AD8E2103CF3FC3FD96",
+				"0A3E27B8CA818264D75C8D81",
+			);
+			"sourceTree" = "<group>";
+		};
+		"CE635C4EABFF5E4F56DBA8FB" = {
+			"isa" = "PBXShellScriptBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"inputPaths" = (
+			);
+			"name" = "Build shared Kotlin framework";
+			"outputPaths" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+			"shellPath" = "/bin/bash";
+			"shellScript" = "bash \"$SRCROOT/../scripts/xcode-build-kotlin.sh\"\n";
+			"alwaysOutOfDate" = 1;
+		};
+		"878A52FC5FF6A57D50B7B870" = {
+			"isa" = "PBXSourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"52C924246E6E42B0BFBD8687",
+				"93197BF017AD86BFC59621BB",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"E2AA269EB967A8853A258BFA" = {
+			"isa" = "PBXFrameworksBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"41D311A605520FC7B8B9A980" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"7607E060366236497909AD63" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"SDKROOT" = "iphoneos";
+				"IPHONEOS_DEPLOYMENT_TARGET" = "16.0";
+				"CLANG_ENABLE_MODULES" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"ENABLE_USER_SCRIPT_SANDBOXING" = "NO";
+				"DEBUG_INFORMATION_FORMAT" = "dwarf";
+			};
+			"name" = "Debug";
+		};
+		"20D16222A5CB9C5786FEB6B3" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.example.swapcampus.ios";
+				"PRODUCT_NAME" = "SwapCampus";
+				"INFOPLIST_FILE" = "iosApp/Info.plist";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"ARCHS" = "arm64";
+				"ONLY_ACTIVE_ARCH" = "YES";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+				"FRAMEWORK_SEARCH_PATHS" = (
+					"$(inherited)",
+					"$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+				);
+				"OTHER_LDFLAGS" = (
+					"$(inherited)",
+					"-framework",
+					"ComposeApp",
+				);
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"ENABLE_PREVIEWS" = "YES";
+				"ENABLE_TESTABILITY" = "YES";
+			};
+			"name" = "Debug";
+		};
+		"0CC31A010A9EAFED2597BEBC" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"SDKROOT" = "iphoneos";
+				"IPHONEOS_DEPLOYMENT_TARGET" = "16.0";
+				"CLANG_ENABLE_MODULES" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"ENABLE_USER_SCRIPT_SANDBOXING" = "NO";
+				"DEBUG_INFORMATION_FORMAT" = "dwarf-with-dsym";
+			};
+			"name" = "Release";
+		};
+		"A74CFA757CE7CA1700BC6197" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.example.swapcampus.ios";
+				"PRODUCT_NAME" = "SwapCampus";
+				"INFOPLIST_FILE" = "iosApp/Info.plist";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"ARCHS" = "arm64";
+				"ONLY_ACTIVE_ARCH" = "YES";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
+				"FRAMEWORK_SEARCH_PATHS" = (
+					"$(inherited)",
+					"$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+				);
+				"OTHER_LDFLAGS" = (
+					"$(inherited)",
+					"-framework",
+					"ComposeApp",
+				);
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"ENABLE_PREVIEWS" = "YES";
+				"ENABLE_TESTABILITY" = "NO";
+			};
+			"name" = "Release";
+		};
+		"DF10D92617D0252A0BF9C919" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"7607E060366236497909AD63",
+				"0CC31A010A9EAFED2597BEBC",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"78F249D9140B5D7B47DA2B7D" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"20D16222A5CB9C5786FEB6B3",
+				"A74CFA757CE7CA1700BC6197",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"34A04005BCAF206EEC990BD9" = {
+			"isa" = "PBXNativeTarget";
+			"buildConfigurationList" = "78F249D9140B5D7B47DA2B7D";
+			"buildPhases" = (
+				"CE635C4EABFF5E4F56DBA8FB",
+				"878A52FC5FF6A57D50B7B870",
+				"E2AA269EB967A8853A258BFA",
+				"41D311A605520FC7B8B9A980",
+			);
+			"buildRules" = (
+			);
+			"dependencies" = (
+			);
+			"name" = "iosApp";
+			"productName" = "SwapCampus";
+			"productReference" = "A8792157CB4F27FB949C035F";
+			"productType" = "com.apple.product-type.application";
+		};
+		"244210E48437B6556980A702" = {
+			"isa" = "PBXProject";
+			"attributes" = {
+				"LastUpgradeCheck" = "2600";
+				"TargetAttributes" = {
+					"34A04005BCAF206EEC990BD9" = {
+						"CreatedOnToolsVersion" = "26.0";
+					};
+				};
+			};
+			"buildConfigurationList" = "DF10D92617D0252A0BF9C919";
+			"compatibilityVersion" = "Xcode 14.0";
+			"developmentRegion" = "en";
+			"hasScannedForEncodings" = 0;
+			"knownRegions" = (
+				"en",
+				"fr",
+				"Base",
+			);
+			"mainGroup" = "0D6E4079E36703EBD37C0072";
+			"productRefGroup" = "0A3E27B8CA818264D75C8D81";
+			"projectDirPath" = "";
+			"projectRoot" = "";
+			"targets" = (
+				"34A04005BCAF206EEC990BD9",
+			);
+		};
+	};
+	"rootObject" = "244210E48437B6556980A702";
+}
